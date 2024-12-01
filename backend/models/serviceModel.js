@@ -40,6 +40,10 @@ const serviceSchema = new mongoose.Schema({
       message: "O desconto deve estar entre 0% e 100%",
     },
   },
+  imageURL: {
+    type: String,
+    required: [true, "Por favor, informe a URL da imagem do serviço"],
+  },
 });
 
 const Service = mongoose.model("Service", serviceSchema);

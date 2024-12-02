@@ -11,7 +11,7 @@ body {
 }
 
 .bg-radial-gradient {
-  background: radial-gradient(100% 100% at 50% 0%, #7D573C 0%, #DD9A6E 50%, #A06B46 100%);
+  background: radial-gradient(100% 100% at 50% 0%, #7d573c 0%, #dd9a6e 50%, #a06b46 100%);
 }
 
 /* Tailwind adjust classes */
@@ -29,6 +29,45 @@ body {
 
 .text-4xs {
   font-size: 8px;
+}
+
+::-moz-selection {
+  color: #f0e7e3;
+  background-color: #614332;
+}
+
+::selection {
+  color: #f0e7e3;
+  background-color: #614332;
+}
+
+::-webkit-scrollbar {
+  height: 10px;
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #a16445
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background-color: #cea489;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #cea489;
+}
+
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: #52525b;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px #23232329;
 }
 
 @layer utilities {
@@ -69,6 +108,7 @@ body {
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -101,6 +141,7 @@ body {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

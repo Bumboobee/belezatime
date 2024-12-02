@@ -117,7 +117,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-//Only for rendered pages, no errors!
 exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
     try {
@@ -170,4 +169,39 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   createSendToken(user, 200, res);
+});
+
+
+exports.verifyTokenValidity = catchAsync(async (req, res, next) => {
+  let token;
+
+  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
+
+  if (!token) {
+    return next(new AppError('Token not provided', 401));
+  }
+
+  try {
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) {
+      return next(new AppError('The user belonging to this token no longer exists', 401));
+    }
+
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+      return next(new AppError('User recently changed password. Please log in again', 401));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Token is valid',
+    });
+  } catch (err) {
+    return next(new AppError('Invalid or expired token', 401));
+  }
 });

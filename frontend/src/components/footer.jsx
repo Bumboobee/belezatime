@@ -15,7 +15,7 @@ const Footer = () => {
             height="250"
             allowFullScreen=""
             loading="lazy"
-            className="w-full max-w-md rounded-lg shadow-lg"
+            className="w-full max-w-md rounded-lg shadow-lg select-none"
           ></iframe>
         </div>
 

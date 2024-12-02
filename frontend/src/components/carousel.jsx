@@ -20,7 +20,7 @@ const ServiceCard = ({ index, service, type, imageURL }) => {
         <span className="text-zinc-800 italic font-medium">{service}</span>
       </div>
       <div className="flex justify-center items-end h-[140px]">
-        <img src={imageURL} alt={service} className="max-h-full max-w-full object-contain" />
+        <img src={imageURL} alt={service} className="max-h-full max-w-full object-contain select-none" />
       </div>
     </div>
   );

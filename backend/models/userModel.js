@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     trim: true,
-    required: [true, "Por favor, informe seu nome"],
+    required: [true, "Informe seu nome"],
     minLength: [3, "O nome deve ter no mínimo 3 caracteres"],
     maxLength: [250, "O nome deve ter no máximo 250 caracteres"],
   },
@@ -17,19 +17,13 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowerCase: true,
-    required: [true, "Por favor, informe seu e-mail"],
-    validate: [isEmail, "Por favor, informe um e-mail válido"],
+    required: [true, "Informe seu e-mail"],
+    validate: [isEmail, "Informe um e-mail válido"],
   },
   phone: {
     type: String,
     trim: true,
-    required: [true, "Por favor, informe seu número de telefone"],
-    validate: {
-      validator: function (v) {
-        return /\d{2}\d{4,5}\d{4}/.test(v);
-      },
-      message: "Por favor, informe um número de telefone válido",
-    },
+    required: [true, "Informe seu número de telefone"],
   },
   role: {
     type: String,
@@ -39,13 +33,13 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     select: false,
-    required: [true, "Por favor, informe uma senha"],
+    required: [true, "Informe uma senha"],
     minLength: 8,
   },
   passwordConfirm: {
     type: String,
     select: false,
-    required: [true, "Por favor, confirme a senha"],
+    required: [true, "Confirme a senha"],
     validate: {
       // Isso só funciona no método SAVE!
       validator: function (el) {

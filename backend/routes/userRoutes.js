@@ -7,6 +7,7 @@ const router = express.Router();
 router.post("/singup", authController.singup);
 router.post("/login", authController.login);
 router.get("/logout", authController.logout);
+router.get('/verifyToken', authController.verifyTokenValidity);
 
 //all the routes after that is going to use the auth.protected
 router.use(authController.protect);

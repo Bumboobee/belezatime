@@ -41,7 +41,7 @@ const CarouselContainer = () => {
         setCenterSlidePercentage(40);
       } else if (window.innerWidth < 1225) {
         setCenterSlidePercentage(35);
-      }  else if (window.innerWidth < 1470) {
+      } else if (window.innerWidth < 1470) {
         setCenterSlidePercentage(30);
       } else {
         setCenterSlidePercentage(25);

@@ -1,9 +1,11 @@
 import PropTypes from "prop-types";
-import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import PageTitle from "@/components/pageTitle";
+import HomeNavbar from "../components/homeNavbar";
 import CarouselContainer from "../components/carousel";
 
+import { useContext } from "react";
+import { AuthContext } from "@/context/authContext";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -28,12 +30,14 @@ const PromotionCard = ({ index, service, imageURL, percentOfDiscount }) => {
 };
 
 const Home = () => {
+  const { handleScheduleAppointmentRedirect } = useContext(AuthContext);
+
   return (
     <>
       <PageTitle title={`${import.meta.env.VITE_APP_NAME} • O estilo que você merece!`} />
 
       <main className="relative min-h-screen w-screen">
-        <Navbar />
+        <HomeNavbar />
 
         <section className="sm:h-dvh h-full bg-radial-gradient font-montserrat">
           <div className="w-full h-full px-6 sm:px-10 pt-16 sm:pt-24 flex flex-col-reverse sm:flex-row-reverse">
@@ -50,6 +54,7 @@ const Home = () => {
                     className: "bg-red-700 hover:bg-red-800 text-white gap-1.5 text-xs w-fit",
                     size: "lg",
                   })}
+                  onClick={handleScheduleAppointmentRedirect}
                 >
                   <RiCalendarScheduleLine />
                   Agendar Horário

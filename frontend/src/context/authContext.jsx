@@ -21,6 +21,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const { toast } = useToast();
   const [isDoingAuthProcess, setIsDoingAuthProcess] = useState(false);
+  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false);
   const [authForm, setAuthForm] = useState({
     name: "",
     email: "",
@@ -36,6 +37,14 @@ export const AuthProvider = ({ children }) => {
     passwordConfirm: "",
   });
   const [cookies, setCookie] = useCookies(["__btime_account_jwt", "__btime_account_user"]);
+
+  const handleScheduleAppointmentRedirect = useCallback(() => {
+    if (!cookies.__btime_account_jwt) {
+      setIsAuthDialogOpen(true);
+    } else {
+      window.location.replace("/dashboard");
+    }
+  }, []);
 
   const handleInputChange = useCallback(async (e) => {
     const { name, value } = e.target;
@@ -159,6 +168,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [authForm, authFormErrors]);
 
+  const handleLogout = useCallback(async () => {
+    setCookie("__btime_account_jwt", "", { path: "/" });
+    setCookie("__btime_account_user", "", { path: "/" });
+
+    window.location.replace("/");
+  }, []);
+
   const handleAuthErrors = (error) => {
     const parts = error.response.data.message.split(": ");
     const trimmedStr = parts.slice(1).join(": ");
@@ -189,12 +205,28 @@ export const AuthProvider = ({ children }) => {
       authForm,
       authFormErrors,
       isDoingAuthProcess,
+      isAuthDialogOpen,
+      setIsAuthDialogOpen,
       setAuthFormErrors,
       handleInputChange,
       handleSignUp,
       handleSignIn,
+      handleLogout,
+      handleScheduleAppointmentRedirect,
     };
-  }, [authForm, authFormErrors, isDoingAuthProcess, setAuthFormErrors, handleInputChange, handleSignUp, handleSignIn]);
+  }, [
+    authForm,
+    authFormErrors,
+    isDoingAuthProcess,
+    isAuthDialogOpen,
+    setIsAuthDialogOpen,
+    setAuthFormErrors,
+    handleInputChange,
+    handleSignUp,
+    handleSignIn,
+    handleLogout,
+    handleScheduleAppointmentRedirect,
+  ]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

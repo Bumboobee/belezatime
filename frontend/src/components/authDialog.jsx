@@ -15,8 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import InputMask from "react-input-mask";
 import ErrorForm from "./errorForm";
+import InputMask from "react-input-mask";
 
 const AuthDialog = () => {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -26,6 +26,8 @@ const AuthDialog = () => {
     authForm,
     authFormErrors,
     isDoingAuthProcess,
+    isAuthDialogOpen,
+    setIsAuthDialogOpen,
     setAuthFormErrors,
     handleInputChange,
     handleSignUp,
@@ -53,7 +55,7 @@ const AuthDialog = () => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isAuthDialogOpen} onOpenChange={setIsAuthDialogOpen}>
       <DialogTrigger asChild>
         <Button
           className={buttonVariants({
@@ -70,7 +72,7 @@ const AuthDialog = () => {
 
       <DialogContent className="sm:max-w-[325px] max-w-[325px] rounded-md bg-brown-chocolate-100 text-zinc-700">
         <DialogHeader>
-          <DialogTitle className="text-center font-montserrat  text-brown-chocolate-400">
+          <DialogTitle className="text-center font-montserrat  text-orange-600">
             {isSignUp ? "Crie sua Conta" : "Entre na sua Conta"}
           </DialogTitle>
           <DialogDescription />

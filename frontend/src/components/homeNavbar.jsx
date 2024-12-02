@@ -8,12 +8,12 @@ import { Button, buttonVariants } from "./ui/button";
 import gsap from "gsap";
 import axios from "axios";
 import AuthDialog from "./authDialog";
-const navItems = ["Serviços", "Agendamento"];
 
+const navItems = ["Serviços", "Agendamento"];
 const baseUrl =
   import.meta.env.VITE_ENV === "development" ? import.meta.env.VITE_API_URL_DEV : import.meta.env.VITE_API_URL_PROD;
 
-const Navbar = () => {
+const HomeNavbar = () => {
   const navContainerRef = useRef(null);
   const [lastScrollY, setlastScrollY] = useState(0);
   const [isNavVisible, setIsNavVisible] = useState(true);
@@ -50,7 +50,7 @@ const Navbar = () => {
       setisUserLoggedIn(true);
     }
   }, [cookies]);
-  
+
   useEffect(() => {
     if (cookies.__btime_account_jwt) {
       checkTokenValidity();
@@ -128,4 +128,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default HomeNavbar;

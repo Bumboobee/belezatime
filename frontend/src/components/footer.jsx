@@ -1,10 +1,13 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
-
+import { AuthContext } from "@/context/authContext";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { FaTiktok, FaFacebook, FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
 const Footer = () => {
+  const { handleScheduleAppointmentRedirect } = useContext(AuthContext);
+
   return (
     <footer className="bg-zinc-800 text-white py-10 px-6 sm:px-12 font-montserrat">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-10">
@@ -43,6 +46,7 @@ const Footer = () => {
               className: "bg-red-700 hover:bg-red-800 text-white gap-1.5 text-xs",
               size: "lg",
             })}
+            onClick={handleScheduleAppointmentRedirect}
           >
             <RiCalendarScheduleLine />
             Agendar Horário

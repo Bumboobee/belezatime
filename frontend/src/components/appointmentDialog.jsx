@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useCookies } from "react-cookie";
 import { FaCheck } from "react-icons/fa6";
+import { GiCancel } from "react-icons/gi";
 import { LuLoader2 } from "react-icons/lu";
 import { GrSchedule } from "react-icons/gr";
 import { Input } from "@/components/ui/input";
@@ -14,6 +15,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { AppointmentContext } from "@/context/appointmentContext";
 import { startOfWeek, endOfWeek, getDay, differenceInDays } from "date-fns";
 import { formatDateBrazil, isDateWithinDaysRange } from "@/utils/formatDate";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -42,6 +44,7 @@ const AppointmentDialog = () => {
     handleInputChange,
     handlePostOrPatchAppointment,
     handleAppointmentDialogClose,
+    handleRemoveFromServicesUserPick,
   } = useContext(AppointmentContext);
   const limitDays = 2;
   const { servicesData, isFetchingServices, errorServices } = useContext(ServiceContext);
@@ -229,23 +232,38 @@ const AppointmentDialog = () => {
 
             <ErrorForm error={appointmentFormErrors.notes} />
           </div>
+
+          {cookies.__btime_account_user && cookies.__btime_account_user.role === "admin" ? (
+            <span className="text-1xs">
+              Tel. Cliente: <span className="font-semibold underline">{appointmentForm.userPhone}</span>
+            </span>
+          ) : null}
         </div>
 
         <DialogFooter className="flex !flex-col gap-4 items-end">
           <div className="flex w-full flex-col items-end gap-2">
             {isDateWithinLimit ? (
-              <Button
-                className={buttonVariants({
-                  variant: "icon",
-                  className: "bg-brown-chocolate-700 hover:bg-brown-chocolate-800 text-white w-fit",
-                  size: "sm",
-                })}
-                onClick={handleAddService}
-                disabled={appointmentForm.service === "" || isSavingAppointment}
-              >
-                <CiCirclePlus />
-                Add. Serviço
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      className={buttonVariants({
+                        variant: "icon",
+                        className: "bg-brown-chocolate-700 hover:bg-brown-chocolate-800 text-white w-fit",
+                        size: "sm",
+                      })}
+                      onClick={handleAddService}
+                      disabled={appointmentForm.service === "" || isSavingAppointment}
+                    >
+                      <CiCirclePlus />
+                      Add. Serviço
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Addicione mais de um serviço para o mesmo horário</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             ) : null}
 
             {servicesUserPick.length > 0 ? (
@@ -270,7 +288,8 @@ const AppointmentDialog = () => {
                       </TableHead>
                       <TableHead className="text-xs text-zinc-700 font-semibold text-center">Preço</TableHead>
                       <TableHead className="text-xs text-zinc-700 font-semibold text-center">Promoção</TableHead>
-                      <TableHead className="text-xs text-zinc-700 font-semibold text-right">Duração</TableHead>
+                      <TableHead className="text-xs text-zinc-700 font-semibold text-center">Duração</TableHead>
+                      <TableHead className="text-xs text-zinc-700 font-semibold text-right">Cancelar</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -285,9 +304,28 @@ const AppointmentDialog = () => {
                             ? formatToBRL((service.price * service.percentOfDiscount) / 100)
                             : "-"}
                         </TableCell>
-                        <TableCell className="text-end">
+                        <TableCell className="text-center">
                           {service.duration}
                           <span className="text-zinc-600/90 text-3xs">min.</span>
+                        </TableCell>
+                        <TableCell className="flex justify-end">
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <GiCancel
+                                  className={`text-red-600 cursor-pointer text-lg ${
+                                    !isDateWithinLimit ? "opacity-30 cursor-not-allowed" : ""
+                                  }`}
+                                  onClick={() =>
+                                    !isDateWithinLimit ? undefined : handleRemoveFromServicesUserPick(service._id)
+                                  }
+                                />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Cancelar este serviço?</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -361,14 +399,24 @@ const AppointmentDialog = () => {
                 }`}
               >
                 {appointmentForm.service !== "" ? (
-                  <img
-                    src={"/assets/models/model-01.svg"}
-                    // servicesData.filter((service) => service._id === appointmentForm.service)[0].imageURL
-                    loading="lazy"
-                    alt="Serviço Img Ilustrativa"
-                    width={150}
-                    className="select-none"
-                  />
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        {" "}
+                        <img
+                          src={"/assets/models/model-01.svg"}
+                          // servicesData.filter((service) => service._id === appointmentForm.service)[0].imageURL
+                          loading="lazy"
+                          alt="Serviço Img Ilustrativa"
+                          width={150}
+                          className="select-none"
+                        />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Imagem ilustrativa* Pode variar de acordo com o(a) cliente</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 ) : null}
 
                 <Button
@@ -385,7 +433,7 @@ const AppointmentDialog = () => {
                     </>
                   ) : (
                     <>
-                      <FaCheck /> Agendar
+                      <FaCheck /> {appointmentForm.id ? "Editar" : "Agendar"}
                     </>
                   )}
                 </Button>

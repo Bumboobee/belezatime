@@ -8,6 +8,7 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import { formatDateBrazil } from "@/utils/formatDate";
 import { formatToBRL } from "@/utils/currencyOperations";
 import { AppointmentContext } from "@/context/appointmentContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import Loader from "./loader";
@@ -78,7 +79,23 @@ const NextAppointments = ({ isAdmin }) => {
                   <TableCell className="font-medium truncate max-w-[150px] whitespace-nowrap">
                     {service.service}
                   </TableCell>
-                  {isAdmin ? <TableCell className="text-left">{appointment.user.name}</TableCell> : null}
+                  {isAdmin ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <TableCell className="text-left">{appointment.user.name}</TableCell>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>
+                            Tel: <span className="font-medium">{appointment.user.phone}</span>
+                          </p>
+                          <p>
+                            Email: <span className="font-medium">{appointment.user.email}</span>
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : null}
                   <TableCell className="text-center">
                     <span
                       className={`${
@@ -112,31 +129,68 @@ const NextAppointments = ({ isAdmin }) => {
                     )}
                   </TableCell>
                   <TableCell className="flex justify-end gap-2 itens-center">
-                    <GiCancel
-                      className={`text-red-600 cursor-pointer text-lg ${
-                        !appointment.isConfirmed ? "opacity-30 cursor-not-allowed" : ""
-                      }`}
-                      onClick={
-                        appointment.isConfirmed
-                          ? () => handleCornfimOrCancelAppointment(appointment._id, false)
-                          : undefined
-                      }
-                    />
-                    <TbEdit
-                      className="text-yellow-600 cursor-pointer text-lg"
-                      onClick={() => handleOpenEditAppointmentDialog(appointment._id)}
-                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <GiCancel
+                            className={`text-red-600 cursor-pointer text-lg ${
+                              !appointment.isConfirmed ? "opacity-30 cursor-not-allowed" : ""
+                            }`}
+                            onClick={
+                              appointment.isConfirmed
+                                ? () => handleCornfimOrCancelAppointment(appointment._id, false)
+                                : undefined
+                            }
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[180px] text-center">
+                            Cancelar agendamento{" "}
+                            <span className="font-semibold text-red-600">(até 2 dias de antecedência)*</span>
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
 
-                    <FaRegCircleCheck
-                      className={`text-green-600 cursor-pointer text-lg ${
-                        appointment.isConfirmed ? "opacity-30 cursor-not-allowed" : ""
-                      }`}
-                      onClick={
-                        !appointment.isConfirmed
-                          ? () => handleCornfimOrCancelAppointment(appointment._id, true)
-                          : undefined
-                      }
-                    />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <TbEdit
+                            className="text-yellow-600 cursor-pointer text-lg"
+                            onClick={() => handleOpenEditAppointmentDialog(appointment._id)}
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[180px] text-center">
+                            Editar agendamento{" "}
+                            <span className="font-semibold text-yellow-600">(até 2 dias de antecedência)*</span>
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <FaRegCircleCheck
+                            className={`text-green-600 cursor-pointer text-lg ${
+                              appointment.isConfirmed ? "opacity-30 cursor-not-allowed" : ""
+                            }`}
+                            onClick={
+                              !appointment.isConfirmed
+                                ? () => handleCornfimOrCancelAppointment(appointment._id, true)
+                                : undefined
+                            }
+                          />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-[180px] text-center">
+                            Confirmar agendamento
+                            <span className="font-semibold text-green-600">(até 2 dias de antecedência)*</span>
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </TableCell>
                 </TableRow>
               ))

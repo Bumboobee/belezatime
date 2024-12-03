@@ -10,8 +10,9 @@ import { MdDeleteForever } from "react-icons/md";
 import { Textarea } from "@/components/ui/textarea";
 import { NumericFormat } from "react-number-format";
 import { ServiceContext } from "@/context/serviceContext";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { formatToBRL } from "@/utils/currencyOperations";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
@@ -222,9 +223,18 @@ const ServiceDialog = () => {
                 checked={isPromotionEnabled}
                 onCheckedChange={() => setIsPromotionEnabled(!isPromotionEnabled)}
               />
-              <Label htmlFor="promotion" className="text-xs">
-                Ativar Promoção?
-              </Label>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Label htmlFor="promotion" className="text-xs">
+                      Ativar Promoção?
+                    </Label>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-[200px] text-center">
+                    <p>Ative uma promoção inserindo um valor de desconto. Seus clientes vão poder visualizar!</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             {isPromotionEnabled && (
@@ -306,21 +316,40 @@ const ServiceDialog = () => {
                       </TableCell>
                       <TableCell className="text-center">{formatToBRL(service.price)}</TableCell>
                       <TableCell className="text-center">
-                        {service.percentOfDiscount ? formatToBRL(service.percentOfDiscount) : "-"}
+                        {service.percentOfDiscount ? `${service.percentOfDiscount}%` : "-"}
                       </TableCell>
                       <TableCell className="text-center">
                         {service.duration}
                         <span className="text-zinc-600/90 text-3xs">min.</span>
                       </TableCell>
                       <TableCell className="flex justify-end gap-2 itens-center">
-                        <MdDeleteForever
-                          className="text-red-600 cursor-pointer text-lg"
-                          onClick={() => handleDeleteService(service._id)}
-                        />
-                        <TbEdit
-                          className="text-yellow-600 cursor-pointer text-lg"
-                          onClick={() => handleEditClick(service)}
-                        />
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <MdDeleteForever
+                                className="text-red-600 cursor-pointer text-lg"
+                                onClick={() => handleDeleteService(service._id)}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Remover Serviço</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <TbEdit
+                                className="text-yellow-600 cursor-pointer text-lg"
+                                onClick={() => handleEditClick(service)}
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Editar Serviço</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -6,6 +6,7 @@ import { FaCheck } from "react-icons/fa";
 import { useCookies } from "react-cookie";
 import { IoMdAlert } from "react-icons/io";
 import { useToast } from "../hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast"
 import { useQuery, useQueryClient } from "react-query";
 import { ServiceContext } from "@/context/serviceContext";
 import { formatToDateOnly, getCurrentDate } from "@/utils/formatDate";
@@ -180,6 +181,19 @@ export const AppointmentProvider = ({ children }) => {
     };
   }, [appointmentsData]);
 
+  useEffect(() => {
+    if (appointmentForm.service !== "") {
+      const serviceToAdd = servicesData.find((service) => service._id === appointmentForm.service);
+
+      if (serviceToAdd) {
+        setServicesUserPick((prev) => {
+          const isAlreadyAdded = prev.some((service) => service._id === appointmentForm.service);
+          return isAlreadyAdded ? prev : [...prev, serviceToAdd];
+        });
+      }
+    }
+  }, [appointmentForm.service]);
+
   const handleAddService = useCallback(() => {
     const selectedService = servicesData.find((service) => service._id === appointmentForm.service);
 
@@ -244,7 +258,7 @@ export const AppointmentProvider = ({ children }) => {
     try {
       const appointmentData = {
         ...appointmentForm,
-        user: cookies.__btime_account_user._id,
+        user: cookies.__btime_account_user.role === "admin" ? appointmentForm.user : cookies.__btime_account_user._id,
         isConfirmed: false,
         services: servicesUserPick,
       };
@@ -290,6 +304,18 @@ export const AppointmentProvider = ({ children }) => {
         queryClient.invalidateQueries("pastAppointments");
         queryClient.invalidateQueries("weekly-appointments");
         queryClient.invalidateQueries("yearly-appointments");
+        queryClient.invalidateQueries("past-three-months-appointments");
+        
+        toast({
+          variant: "destructive",
+          title: "Agora confirme o horário.",
+          description: (
+            <p>
+              Confirme o horário na aba de <span className="font-semibold italic">{`"Próximos Agendamentos"`}</span> !
+            </p>
+          ),
+          action: <ToastAction altText="Confirmar?" onClick={() => handleCornfimOrCancelAppointment(response.data.data.data._id, true)}>Confirmar?</ToastAction>,
+        });
       }
     } catch (error) {
       if (error.response?.status === 400) {
@@ -314,6 +340,7 @@ export const AppointmentProvider = ({ children }) => {
 
   const handleCornfimOrCancelAppointment = useCallback(
     async (appointmentId, isConfirmed) => {
+      console.log("appointmentId", appointmentId);
       try {
         const response = await axios.patch(
           `${baseUrl}/appointments/${appointmentId}`,
@@ -393,6 +420,7 @@ export const AppointmentProvider = ({ children }) => {
         hour: appointment.hour,
         notes: appointment.notes,
         isConfirmed: appointment.isConfirmed,
+        userPhone: appointment.user.phone,
       }));
 
       setServicesUserPick(appointment.services);
@@ -417,6 +445,13 @@ export const AppointmentProvider = ({ children }) => {
       }
     });
   };
+
+  const handleRemoveFromServicesUserPick = useCallback(
+    (serviceId) => {
+      setServicesUserPick((prev) => prev.filter((service) => service._id !== serviceId));
+    },
+    [servicesUserPick]
+  );
 
   const value = useMemo(() => {
     return {
@@ -448,6 +483,7 @@ export const AppointmentProvider = ({ children }) => {
       handleAppointmentDialogClose,
       handleCornfimOrCancelAppointment,
       handleOpenEditAppointmentDialog,
+      handleRemoveFromServicesUserPick,
     };
   }, [
     appointmentForm,
@@ -478,6 +514,7 @@ export const AppointmentProvider = ({ children }) => {
     handleAppointmentDialogClose,
     handleCornfimOrCancelAppointment,
     handleOpenEditAppointmentDialog,
+    handleRemoveFromServicesUserPick,
   ]);
 
   return <AppointmentContext.Provider value={value}>{children}</AppointmentContext.Provider>;

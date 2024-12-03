@@ -137,10 +137,24 @@ const GeneralInformation = ({ isAdmin }) => {
               <>
                 <div className="flex flex-col">
                   <span className="text-3xs font-medium">Somente Hoje</span>
-                  <span className="text-md font-bold">{currentService.percentOfDiscount}% OFF</span>
+                  <span className="text-xl font-bold font-poppins leading-none">
+                    {currentService.percentOfDiscount}% OFF
+                  </span>
                 </div>
 
-                <span className="text-lg font-bold text-zinc-900">{currentService.service}</span>
+                <span className=" text-zinc-900 flex justify-between gap-4 items-center leading-none">
+                  <span className="text-xl font-bold truncate max-w-[120px] sm:max-w-full"> {currentService.service}</span>
+                  <span className="flex flex-col">
+                    <span className="text-xs italic text-zinc-800/80 line-through">
+                      {formatToBRL(currentService.price)}
+                    </span>
+                    <span className="font-bold">
+                      {formatToBRL(
+                        currentService.price - currentService.price * (currentService.percentOfDiscount / 100)
+                      )}
+                    </span>
+                  </span>
+                </span>
                 <span className="text-3xs font-medium w-[50px] text-right italic">Promoção Imperdível</span>
               </>
             ) : (

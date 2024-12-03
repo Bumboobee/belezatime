@@ -10,6 +10,7 @@ import { formatDateBrazil } from "@/utils/formatDate";
 import { FaFilePdf, FaFileCsv } from "react-icons/fa6";
 import { formatToBRL } from "@/utils/currencyOperations";
 import { DialogDescription } from "@radix-ui/react-dialog";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import jsPDF from "jspdf";
@@ -192,9 +193,18 @@ const ExportDataDialog = ({ data }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <div className="flex items-center justify-between p-2 rounded border border-off-white-700 cursor-pointer">
-          <FaFileDownload className="scale-125 text-off-white-900" />
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="flex items-center justify-between p-2 rounded border border-off-white-700 cursor-pointer">
+                <FaFileDownload className="scale-125 text-off-white-900" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Fazer download dos dados</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </DialogTrigger>
 
       <DialogContent className="max-w-fit bg-off-white-600/90 p-4" onOpenAutoFocus={(e) => e.preventDefault()}>

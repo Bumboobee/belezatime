@@ -7,6 +7,7 @@ import { MessageWarning } from "./messageWarning";
 import { formatDateBrazil } from "@/utils/formatDate";
 import { formatToBRL } from "@/utils/currencyOperations";
 import { AppointmentContext } from "@/context/appointmentContext";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import Loader from "./loader";
@@ -112,10 +113,21 @@ const PastAppointments = ({ isAdmin }) => {
                       )}
                     </TableCell>
                     <TableCell className="flex justify-end gap-2 itens-center">
-                      <TbEdit
-                        className="text-yellow-600 cursor-pointer text-lg"
-                        onClick={() => handleOpenEditAppointmentDialog(appointment._id)}
-                      />
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <TbEdit
+                              className="text-yellow-600 cursor-pointer text-lg"
+                              onClick={() => handleOpenEditAppointmentDialog(appointment._id)}
+                            />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              Visualizar agendamento <span className="font-semibold text-yellow-500">(histórico)*</span>
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </TableCell>
                   </TableRow>
                 ))

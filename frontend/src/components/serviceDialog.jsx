@@ -1,7 +1,7 @@
+import { useContext } from "react";
 import { TbEdit } from "react-icons/tb";
 import { FaCheck } from "react-icons/fa6";
 import { LuLoader2 } from "react-icons/lu";
-import { useContext, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -35,6 +35,8 @@ const ServiceDialog = () => {
     servicesData,
     isFetchingServices,
     errorServices,
+    isPromotionEnabled,
+    setIsPromotionEnabled,
     setIsServiceDialogOpen,
     handleInputChange,
     handlePostOrPatchService,
@@ -42,8 +44,6 @@ const ServiceDialog = () => {
     handleServiceDialogClose,
     handleDeleteService,
   } = useContext(ServiceContext);
-
-  const [isPromotionEnabled, setIsPromotionEnabled] = useState(false);
 
   return (
     <Dialog
@@ -293,6 +293,7 @@ const ServiceDialog = () => {
                   <TableRow>
                     <TableHead className="text-xs text-zinc-700 font-semibold !w-[200px] sm:!w-auto">Serviço</TableHead>
                     <TableHead className="text-xs text-zinc-700 font-semibold text-center">Preço</TableHead>
+                    <TableHead className="text-xs text-zinc-700 font-semibold text-center">Promoção</TableHead>
                     <TableHead className="text-xs text-zinc-700 font-semibold text-center">Duração</TableHead>
                     <TableHead className="text-xs text-zinc-700 font-semibold text-right">Ações</TableHead>
                   </TableRow>
@@ -304,6 +305,9 @@ const ServiceDialog = () => {
                         {service.service}
                       </TableCell>
                       <TableCell className="text-center">{formatToBRL(service.price)}</TableCell>
+                      <TableCell className="text-center">
+                        {service.percentOfDiscount ? formatToBRL(service.percentOfDiscount) : "-"}
+                      </TableCell>
                       <TableCell className="text-center">
                         {service.duration}
                         <span className="text-zinc-600/90 text-3xs">min.</span>

@@ -42,8 +42,8 @@ body {
 }
 
 ::-webkit-scrollbar {
-  height: 10px;
-  width: 10px;
+  height: 4px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -67,6 +67,23 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #52525b;
   transition: background-color 5000s ease-in-out 0s;
   box-shadow: inset 0 0 20px 20px #23232329;
+}
+
+.aspect-square {
+  width: 100% !important;
+  height: 100% !important;
+  aspect-ratio: 6 / 4.7;
+}
+
+/* .slider {
+  transform: none !important;
+} */
+
+.slide {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: start !important;
+  padding: 0 !important;
 }
 
 @layer utilities {
@@ -168,11 +185,32 @@ input:-webkit-autofill:active {
     --input: 20 5.9% 90%;
     --ring: 24.6 95% 53.1%;
     --radius: 0.5rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    --color-bar-1: #facc15;
+    --color-bar-2: #f59e0b;
+    --color-bar-3: #c3906f;
+    --color-bar-4: #a16207;
+    --color-bar-5: #fb923c;
+    --color-bar-6: #b5846d;
+    --color-bar-7: #77533b;
+    --color-bar-8: #d9b8a3;
+    --color-bar-9: #a16445;
+    --color-bar-10: #c9a595;
+    --color-bar-11: #fde68a;
+    --color-bar-12: #451a03;
+    --color-bar-13: #e4ccbd;
+    --color-bar-14: #facc15;
+    --color-bar-15: #fb923c;
+    --color-bar-16: #c3906f;
+    --color-bar-17: #cea489;
+    --color-bar-18: #4b3328;
+    --color-bar-19: #b5846d;
+    --color-bar-20: #c9a595;
   }
 
   .dark {
@@ -200,5 +238,26 @@ input:-webkit-autofill:active {
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+
+    --color-bar-1: #facc15;
+    --color-bar-2: #f59e0b;
+    --color-bar-3: #c3906f;
+    --color-bar-4: #a16207;
+    --color-bar-5: #fb923c;
+    --color-bar-6: #b5846d;
+    --color-bar-7: #77533b;
+    --color-bar-8: #d9b8a3;
+    --color-bar-9: #a16445;
+    --color-bar-10: #c9a595;
+    --color-bar-11: #fde68a;
+    --color-bar-12: #451a03;
+    --color-bar-13: #e4ccbd;
+    --color-bar-14: #facc15;
+    --color-bar-15: #fb923c;
+    --color-bar-16: #c3906f;
+    --color-bar-17: #cea489;
+    --color-bar-18: #4b3328;
+    --color-bar-19: #b5846d;
+    --color-bar-20: #c9a595;
   }
 }

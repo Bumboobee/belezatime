@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-refresh/only-export-components */
+
 import { FaCheck } from "react-icons/fa";
 import { useCookies } from "react-cookie";
 import { IoMdAlert } from "react-icons/io";
@@ -19,6 +20,7 @@ export const ServiceContext = createContext();
 export const ServiceProvider = ({ children }) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [isPromotionEnabled, setIsPromotionEnabled] = useState(false);
   const [isSavingService, setIsSavingService] = useState(false);
   const [isServiceDialogOpen, setIsServiceDialogOpen] = useState(false);
   const [serviceForm, setServiceForm] = useState({
@@ -76,6 +78,12 @@ export const ServiceProvider = ({ children }) => {
 
   const handleEditClick = useCallback((service) => {
     setServiceForm(service);
+
+    if (service.percentOfDiscount) {
+      setIsPromotionEnabled(true)
+    } else {
+      setIsPromotionEnabled(false)
+    }
   }, []);
 
   const handlePostOrPatchService = useCallback(async () => {
@@ -222,6 +230,8 @@ export const ServiceProvider = ({ children }) => {
       servicesData,
       isFetchingServices,
       errorServices,
+      isPromotionEnabled,
+      setIsPromotionEnabled,
       setIsServiceDialogOpen,
       setServiceFormErrors,
       handleInputChange,
@@ -238,6 +248,8 @@ export const ServiceProvider = ({ children }) => {
     servicesData,
     isFetchingServices,
     errorServices,
+    isPromotionEnabled,
+    setIsPromotionEnabled,
     setIsServiceDialogOpen,
     setServiceFormErrors,
     handleInputChange,

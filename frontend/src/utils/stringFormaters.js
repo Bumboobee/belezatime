@@ -10,8 +10,6 @@ export const getFirstWords = (text, numberOfWords = 2) => {
   return text;
 };
 
-//create a function that will return the first and the last strign of a text
-
 export const getFirstAndLastWord = (text) => {
   if (!text) return "";
 

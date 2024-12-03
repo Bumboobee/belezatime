@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { useContext } from "react";
 import { FaCheck } from "react-icons/fa";
 import { useCookies } from "react-cookie";
@@ -21,6 +22,8 @@ export const AppointmentContext = createContext();
 export const AppointmentProvider = ({ children }) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const location = window.location.pathname;
+  const { servicesData } = useContext(ServiceContext);
   const [servicesUserPick, setServicesUserPick] = useState([]);
   const [isSavingAppointment, setIsSavingAppointment] = useState(false);
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
@@ -41,7 +44,8 @@ export const AppointmentProvider = ({ children }) => {
     isConfirmed: "",
   });
   const [cookies] = useCookies(["__btime_account_jwt", "__btime_account_user"]);
-  const { servicesData } = useContext(ServiceContext);
+  const [nextAppointments, setNextAppointments] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
 
   const fetchAppointments = async () => {
     if (!cookies.__btime_account_jwt) {
@@ -57,12 +61,89 @@ export const AppointmentProvider = ({ children }) => {
     return response.data.data.appointments;
   };
 
+  const fetchWeeklyAppointments = async () => {
+    if (!cookies.__btime_account_jwt) {
+      return [];
+    }
+
+    const response = await axios.get(`${baseUrl}/appointments/info/weeklyMetrics`, {
+      headers: {
+        Authorization: `Bearer ${cookies.__btime_account_jwt}`,
+      },
+    });
+
+    return response.data.data;
+  };
+
+  const fetchYearlyAppointments = async () => {
+    if (!cookies.__btime_account_jwt) {
+      return [];
+    }
+
+    const response = await axios.get(`${baseUrl}/appointments/info/yearlyStats`, {
+      headers: {
+        Authorization: `Bearer ${cookies.__btime_account_jwt}`,
+      },
+    });
+
+    return response.data.data;
+  };
+
+  const fetchPastThreeMonthsAppointments = async () => {
+    if (!cookies.__btime_account_jwt) {
+      return [];
+    }
+
+    const response = await axios.get(`${baseUrl}/appointments/info/servicesSpentByUser`, {
+      headers: {
+        Authorization: `Bearer ${cookies.__btime_account_jwt}`,
+      },
+    });
+
+    return response.data.data;
+  };
+
   const {
-    data: appointmentsData,
+    data: appointmentsData = [],
     isFetching: isFetchingAppointments,
     error: errorAppointments,
   } = useQuery("appointments", fetchAppointments, {
     refetchOnWindowFocus: false,
+    enabled: !!cookies.__btime_account_user && location === "/dashboard",
+    refetchInterval:
+      !!cookies.__btime_account_user && cookies.__btime_account_user.role === "admin" ? 1000 * 60 * 5 : false,
+  });
+
+  const {
+    data: weeklyAppointmentsData = [],
+    isFetching: isFetchingWeeklyAppointments,
+    error: errorWeeklyAppointments,
+  } = useQuery("weekly-appointments", fetchWeeklyAppointments, {
+    refetchOnWindowFocus: true,
+    enabled:
+      !!cookies.__btime_account_user && cookies.__btime_account_user.role === "admin" && location === "/dashboard",
+    refetchInterval: 1000 * 60 * 15, //15 minutes
+  });
+
+  const {
+    data: yearlyApointmentsData = [],
+    isFetching: isFetchingYearlyApointments,
+    error: errorYearlyApointments,
+  } = useQuery("yearly-appointments", fetchYearlyAppointments, {
+    refetchOnWindowFocus: true,
+    enabled:
+      !!cookies.__btime_account_user && cookies.__btime_account_user.role === "admin" && location === "/dashboard",
+    refetchInterval: 1000 * 60 * 15, //15 minutes
+  });
+
+  const {
+    data: pastThreeMonthsApointmentsData = [],
+    isFetching: isFetchingPastThreeMonthsApointments,
+    error: errorPastThreeMonthsApointments,
+  } = useQuery("past-three-months-appointments", fetchPastThreeMonthsAppointments, {
+    refetchOnWindowFocus: true,
+    enabled:
+      !!cookies.__btime_account_user && cookies.__btime_account_user.role !== "admin" && location === "/dashboard",
   });
 
   useEffect(() => {
@@ -71,6 +152,33 @@ export const AppointmentProvider = ({ children }) => {
       date: getCurrentDate(),
     }));
   }, []);
+
+  //filter the appointments to get the next and past appointments
+  useEffect(() => {
+    const nextAppointments = appointmentsData?.filter(
+      (appointment) => new Date(appointment.date) >= new Date(getCurrentDate())
+    );
+
+    const pastAppointments = appointmentsData?.filter(
+      (appointment) => new Date(appointment.date) < new Date(getCurrentDate())
+    );
+
+    if (nextAppointments) {
+      nextAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+    }
+
+    if (pastAppointments) {
+      pastAppointments.sort((a, b) => new Date(b.date) - new Date(a.date));
+    }
+
+    setNextAppointments(nextAppointments);
+    setPastAppointments(pastAppointments);
+
+    return () => {
+      setNextAppointments([]);
+      setPastAppointments([]);
+    };
+  }, [appointmentsData]);
 
   const handleAddService = useCallback(() => {
     const selectedService = servicesData.find((service) => service._id === appointmentForm.service);
@@ -176,11 +284,14 @@ export const AppointmentProvider = ({ children }) => {
 
         setServicesUserPick([]);
         setIsAppointmentDialogOpen(false);
+
         queryClient.invalidateQueries("appointments");
+        queryClient.invalidateQueries("nextAppointments");
+        queryClient.invalidateQueries("pastAppointments");
+        queryClient.invalidateQueries("weekly-appointments");
+        queryClient.invalidateQueries("yearly-appointments");
       }
     } catch (error) {
-      console.error(error);
-
       if (error.response?.status === 400) {
         handleAppointmentErrors(error);
       } else {
@@ -225,10 +336,13 @@ export const AppointmentProvider = ({ children }) => {
           });
 
           queryClient.invalidateQueries("appointments");
+          queryClient.invalidateQueries("nextAppointments");
+          queryClient.invalidateQueries("pastAppointments");
+          queryClient.invalidateQueries("weekly-appointments");
+          queryClient.invalidateQueries("yearly-appointments");
+          queryClient.invalidateQueries("past-three-months-appointments");
         }
       } catch (error) {
-        console.log(error);
-
         toast({
           title: (
             <span className="flex items-center">
@@ -242,23 +356,6 @@ export const AppointmentProvider = ({ children }) => {
     },
     [cookies.__btime_account_jwt, toast, queryClient]
   );
-
-  const handleAppointmentErrors = (error) => {
-    const parts = error.response.data.message.split(": ");
-    const trimmedStr = parts.slice(1).join(": ");
-    const errorMessages = trimmedStr.split(",").map((s) => s.trim());
-
-    errorMessages.forEach((message) => {
-      const [key, value] = message.split(": ");
-
-      if (key && value) {
-        setAppointmentFormErrors((prevErrors) => ({
-          ...prevErrors,
-          [key]: value,
-        }));
-      }
-    });
-  };
 
   const handleAppointmentDialogClose = useCallback(() => {
     setIsAppointmentDialogOpen(false);
@@ -287,8 +384,6 @@ export const AppointmentProvider = ({ children }) => {
     (appointmentId) => {
       const appointment = appointmentsData.find((appointment) => appointment._id === appointmentId);
 
-      console.log(appointment);
-
       setAppointmentForm((prev) => ({
         ...prev,
         id: appointment._id,
@@ -306,16 +401,44 @@ export const AppointmentProvider = ({ children }) => {
     [appointmentsData]
   );
 
+  const handleAppointmentErrors = (error) => {
+    const parts = error.response.data.message.split(": ");
+    const trimmedStr = parts.slice(1).join(": ");
+    const errorMessages = trimmedStr.split(",").map((s) => s.trim());
+
+    errorMessages.forEach((message) => {
+      const [key, value] = message.split(": ");
+
+      if (key && value) {
+        setAppointmentFormErrors((prevErrors) => ({
+          ...prevErrors,
+          [key]: value,
+        }));
+      }
+    });
+  };
+
   const value = useMemo(() => {
     return {
       appointmentForm,
       appointmentFormErrors,
       isSavingAppointment,
       isAppointmentDialogOpen,
+      servicesUserPick,
       appointmentsData,
       isFetchingAppointments,
       errorAppointments,
-      servicesUserPick,
+      weeklyAppointmentsData,
+      isFetchingWeeklyAppointments,
+      errorWeeklyAppointments,
+      yearlyApointmentsData,
+      isFetchingYearlyApointments,
+      errorYearlyApointments,
+      pastThreeMonthsApointmentsData,
+      isFetchingPastThreeMonthsApointments,
+      errorPastThreeMonthsApointments,
+      nextAppointments,
+      pastAppointments,
       setIsAppointmentDialogOpen,
       setAppointmentFormErrors,
       handleInputChange,
@@ -331,10 +454,21 @@ export const AppointmentProvider = ({ children }) => {
     appointmentFormErrors,
     isSavingAppointment,
     isAppointmentDialogOpen,
+    servicesUserPick,
     appointmentsData,
     isFetchingAppointments,
     errorAppointments,
-    servicesUserPick,
+    weeklyAppointmentsData,
+    isFetchingWeeklyAppointments,
+    errorWeeklyAppointments,
+    yearlyApointmentsData,
+    isFetchingYearlyApointments,
+    errorYearlyApointments,
+    pastThreeMonthsApointmentsData,
+    isFetchingPastThreeMonthsApointments,
+    errorPastThreeMonthsApointments,
+    nextAppointments,
+    pastAppointments,
     setIsAppointmentDialogOpen,
     setAppointmentFormErrors,
     handleInputChange,

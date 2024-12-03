@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useCookies } from "react-cookie";
 import { FaCheck } from "react-icons/fa6";
 import { LuLoader2 } from "react-icons/lu";
@@ -11,6 +12,7 @@ import { formatToBRL } from "@/utils/currencyOperations";
 import { ServiceContext } from "@/context/serviceContext";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { AppointmentContext } from "@/context/appointmentContext";
+import { startOfWeek, endOfWeek, getDay, differenceInDays } from "date-fns";
 import { formatDateBrazil, isDateWithinDaysRange } from "@/utils/formatDate";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -28,6 +30,8 @@ import ErrorForm from "./errorForm";
 
 const AppointmentDialog = () => {
   const {
+    appointmentsData,
+    isFetchingAppointments,
     appointmentForm,
     appointmentFormErrors,
     isSavingAppointment,
@@ -41,17 +45,64 @@ const AppointmentDialog = () => {
   } = useContext(AppointmentContext);
   const limitDays = 2;
   const { servicesData, isFetchingServices, errorServices } = useContext(ServiceContext);
-  const [isDateWithinTwoDaysRange, setIsDateWithinDaysRange] = useState(true);
+  const [isDateWithinLimit, setIsDateWithinLimit] = useState(true);
+  const [haveAlreadyAppointmentOnSameWeek, setHaveAlreadyAppointmentOnSameWeek] = useState({
+    status: false,
+    suggestion: "",
+  });
   const [cookies] = useCookies(["__btime_account_user"]);
 
+  // Principal Function
   useEffect(() => {
     if (appointmentForm.id) {
       if (cookies.__btime_account_user && cookies.__btime_account_user.role === "user") {
         const withinRange = isDateWithinDaysRange(appointmentForm.date, limitDays);
-        setIsDateWithinDaysRange(withinRange);
-      } else setIsDateWithinDaysRange(true);
-    } else setIsDateWithinDaysRange(true);
+        setIsDateWithinLimit(withinRange);
+      } else setIsDateWithinLimit(true);
+    } else setIsDateWithinLimit(true);
   }, [appointmentForm.date, appointmentForm.id, cookies.__btime_account_user]);
+
+  // Principal Function
+  useEffect(() => {
+    if (appointmentForm.date && !isFetchingAppointments && appointmentForm.date !== "") {
+      const selectedDate = new Date(appointmentForm.date);
+
+      const weekStart = startOfWeek(selectedDate, { weekStartsOn: 0 });
+      const weekEnd = endOfWeek(selectedDate, { weekStartsOn: 0 });
+
+      const appointmentsInWeek = appointmentsData.filter((appointment) => {
+        const appointmentDate = new Date(appointment.date);
+        return appointmentDate >= weekStart && appointmentDate <= weekEnd;
+      });
+
+      const isSameDay = appointmentsInWeek.some((appointment) => {
+        const appointmentDate = new Date(appointment.date);
+        return getDay(appointmentDate) === getDay(selectedDate);
+      });
+
+      if (!isSameDay && appointmentsInWeek.length > 0) {
+        const closestAppointment = appointmentsInWeek.reduce((closest, current) => {
+          const currentDate = new Date(current.date);
+          const closestDate = new Date(closest.date);
+          const currentDiff = Math.abs(differenceInDays(selectedDate, currentDate));
+          const closestDiff = Math.abs(differenceInDays(selectedDate, closestDate));
+          return currentDiff < closestDiff ? current : closest;
+        });
+
+        const formattedDate = formatDateBrazil(closestAppointment.date);
+
+        setHaveAlreadyAppointmentOnSameWeek({
+          status: true,
+          suggestion:
+            cookies.__btime_account_user.role === "user"
+              ? `Você já possui um agendamento para a mesma semana. Sugerimos que agende no mesmo dia: ${formattedDate}.`
+              : `Cliente possui agendamento para a mesma semana em ${formattedDate}.`,
+        });
+      } else {
+        setHaveAlreadyAppointmentOnSameWeek({ status: false, suggestion: "" });
+      }
+    }
+  }, [appointmentForm.date, appointmentsData, cookies.__btime_account_user]);
 
   return (
     <Dialog
@@ -60,6 +111,7 @@ const AppointmentDialog = () => {
         setIsAppointmentDialogOpen(isOpen);
         if (!isOpen) {
           handleAppointmentDialogClose();
+          setHaveAlreadyAppointmentOnSameWeek({ status: false, suggestion: "" });
         }
       }}
     >
@@ -79,13 +131,15 @@ const AppointmentDialog = () => {
 
       <DialogContent className="w-[360px] sm:w-fit sm:px-6 px-2 pb-0 rounded-md bg-off-white-600/90 text-zinc-700">
         <DialogHeader>
-          <DialogTitle className="font-montserrat text-orange-600 text-left">Agendar Horário</DialogTitle>
+          <DialogTitle className="font-montserrat text-orange-600 text-left">
+            {appointmentForm.id ? "Editar" : "Agendar"} Horário
+          </DialogTitle>
           <DialogDescription />
         </DialogHeader>
 
         <div className="grid gap-4 py-4 text-zinc-600">
-          <div className="grid grid-cols-12 gap-2.5">
-            <div className="flex flex-col col-span-5">
+          <div className="sm:flex gap-2.5 grid grid-cols-12">
+            <div className="flex flex-col col-span-5 sm:w-[180px]">
               <Label htmlFor="service" className="text-left text-1xs">
                 Serviço*
               </Label>
@@ -93,7 +147,7 @@ const AppointmentDialog = () => {
               <Select
                 id="type"
                 name="type"
-                disabled={!isDateWithinTwoDaysRange}
+                disabled={!isDateWithinLimit}
                 className="!text-1xs"
                 value={appointmentForm.service}
                 onValueChange={(value) => handleInputChange({ target: { name: "service", value } })}
@@ -117,7 +171,7 @@ const AppointmentDialog = () => {
               <ErrorForm error={appointmentFormErrors.service} />
             </div>
 
-            <div className="flex flex-col col-span-4">
+            <div className="flex flex-col col-span-4 sm:w-fit">
               <Label htmlFor="price" className="text-left text-1xs">
                 Data*
               </Label>
@@ -127,7 +181,7 @@ const AppointmentDialog = () => {
                 type="date"
                 required
                 name="date"
-                disabled={!isDateWithinTwoDaysRange}
+                disabled={!isDateWithinLimit}
                 className="text-1xs"
                 value={appointmentForm.date}
                 onChange={handleInputChange}
@@ -136,7 +190,7 @@ const AppointmentDialog = () => {
               <ErrorForm error={appointmentFormErrors.price} />
             </div>
 
-            <div className="flex flex-col col-span-3">
+            <div className="flex flex-col col-span-3 sm:w-fit">
               <Label htmlFor="duration" className="text-left text-1xs">
                 Hora*
               </Label>
@@ -144,7 +198,7 @@ const AppointmentDialog = () => {
               <Input
                 type="time"
                 name="hour"
-                disabled={!isDateWithinTwoDaysRange}
+                disabled={!isDateWithinLimit}
                 value={appointmentForm.hour}
                 required
                 onChange={(event) => {
@@ -167,7 +221,7 @@ const AppointmentDialog = () => {
             <Textarea
               id="notes"
               name="notes"
-              disabled={!isDateWithinTwoDaysRange}
+              disabled={!isDateWithinLimit}
               className="text-1xs"
               value={appointmentForm.notes}
               onChange={handleInputChange}
@@ -179,7 +233,7 @@ const AppointmentDialog = () => {
 
         <DialogFooter className="flex !flex-col gap-4 items-end">
           <div className="flex w-full flex-col items-end gap-2">
-            {isDateWithinTwoDaysRange ? (
+            {isDateWithinLimit ? (
               <Button
                 className={buttonVariants({
                   variant: "icon",
@@ -248,7 +302,7 @@ const AppointmentDialog = () => {
               <LuLoader2 className="animate-spin" />
             </div>
           ) : appointmentForm.service !== "" ? (
-            isDateWithinTwoDaysRange ? (
+            isDateWithinLimit ? (
               <>
                 <Table className="relative overflow-x-auto w-full">
                   <TableHeader>
@@ -293,35 +347,49 @@ const AppointmentDialog = () => {
             </div>
           ) : null}
 
-          {isDateWithinTwoDaysRange ? (
-            <div className="flex justify-between w-full items-end">
-              <img
-                src={"/assets/models/model-01.svg"}
-                // servicesData.filter((service) => service._id === appointmentForm.service)[0].imageURL
-                loading="lazy"
-                alt="Serviço Img Ilustrativa"
-                width={150}
-                className="select-none"
-              />
+          {isDateWithinLimit ? (
+            <div className="flex flex-col w-full">
+              {haveAlreadyAppointmentOnSameWeek.status ? (
+                <div className="flex flex-col items-center w-full bg-yellow-100 p-4 rounded-lg border border-yellow-300 text-center text-xs mb-4">
+                  <span>{haveAlreadyAppointmentOnSameWeek.suggestion}</span>
+                </div>
+              ) : null}
 
-              <Button
-                className={buttonVariants({
-                  className: "bg-red-700 hover:bg-red-800 text-white gap-1.5 px-6 w-fit mb-6",
-                  size: "md",
-                })}
-                onClick={handlePostOrPatchAppointment}
-                disabled={isSavingAppointment}
+              <div
+                className={`flex w-full items-end ${
+                  appointmentForm.service === "" ? "justify-end" : "justify-between"
+                }`}
               >
-                {isSavingAppointment ? (
-                  <>
-                    <LuLoader2 className="animate-spin" /> Agendando...
-                  </>
-                ) : (
-                  <>
-                    <FaCheck /> Agendar
-                  </>
-                )}
-              </Button>
+                {appointmentForm.service !== "" ? (
+                  <img
+                    src={"/assets/models/model-01.svg"}
+                    // servicesData.filter((service) => service._id === appointmentForm.service)[0].imageURL
+                    loading="lazy"
+                    alt="Serviço Img Ilustrativa"
+                    width={150}
+                    className="select-none"
+                  />
+                ) : null}
+
+                <Button
+                  className={buttonVariants({
+                    className: "bg-red-700 hover:bg-red-800 text-white gap-1.5 px-6 w-fit mb-6",
+                    size: "md",
+                  })}
+                  onClick={handlePostOrPatchAppointment}
+                  disabled={isSavingAppointment}
+                >
+                  {isSavingAppointment ? (
+                    <>
+                      <LuLoader2 className="animate-spin" /> Agendando...
+                    </>
+                  ) : (
+                    <>
+                      <FaCheck /> Agendar
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="flex flex-col items-center w-full bg-yellow-100 p-4 rounded-lg border border-yellow-300 text-center text-xs mb-4">

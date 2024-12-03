@@ -83,7 +83,9 @@ const Footer = () => {
           </Link>
         </div>
         <p className="mt-4 sm:mt-0 text-center sm:text-right">
-          Copyright &copy; BelezaTime - Todos os Direitos Reservados
+          Copyright &copy; BelezaTime - Todos os Direitos Reservados | {" "}
+          
+          <Link to={"https://bumboobee.netlify.app/"} target="_blank" className="font-semibold underline text-brown-chocolate-400">Bumboobee</Link>
         </p>
       </div>
     </footer>

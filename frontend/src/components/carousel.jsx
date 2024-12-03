@@ -5,19 +5,25 @@ import { Carousel } from "react-responsive-carousel";
 import PropTypes from "prop-types";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
-const ServiceCard = ({ index, service, type, imageURL }) => {
+const ServiceCard = ({ index, service, type, imageURL, isDashboard }) => {
   const colors = ["bg-off-white-950", "bg-off-white-700", "bg-red-900", "bg-brown-chocolate-400"];
-
   const color = colors[index % colors.length];
-  const size = index % 2 === 0 ? "w-[200px] h-[240px]" : "w-[200px] h-[300px]";
+  const sizeHome = index % 2 === 0 ? "w-[200px] h-[240px]" : "w-[200px] h-[300px]";
+  const sizeDashboard = index % 2 === 0 ? "w-[100px] h-[140px]" : "w-[100px] h-[180px]";
 
   return (
-    <div className={`${color} ${size} rounded-xl flex flex-col font-montserrat justify-between overflow-hidden`}>
-      <div className="flex flex-col gap-2 p-4 text-left">
-        <span className="text-xs font-medium me-2 px-2.5 py-0.5 rounded bg-yellow-900 text-yellow-100 w-fit">
+    <div
+      className={`${color} ${
+        isDashboard ? sizeDashboard : sizeHome
+      } rounded-xl flex flex-col font-montserrat justify-between overflow-hidden ${
+        isDashboard ? "scale-100" : "scale-100"
+      }`}
+    >
+      <div className={`flex flex-col text-left ${isDashboard ? "gap-1 p-2" : "gap-2 p-4"}`}>
+        <span className="text-2xs font-medium me-2 px-2.5 py-0.5 rounded bg-yellow-900 text-yellow-100 w-fit">
           {type}
         </span>
-        <span className="text-zinc-800 italic font-medium">{service}</span>
+        <span className={`text-zinc-800 italic font-medium ${isDashboard ? "text-xs" : "text-md"} `}>{service}</span>
       </div>
       <div className="flex justify-center items-end h-[140px]">
         <img src={imageURL} alt={service} className="max-h-full max-w-full object-contain select-none" />
@@ -26,13 +32,13 @@ const ServiceCard = ({ index, service, type, imageURL }) => {
   );
 };
 
-const CarouselContainer = () => {
+const CarouselContainer = ({ isDashboard }) => {
   const [centerSlidePercentage, setCenterSlidePercentage] = useState(25);
 
   useEffect(() => {
     const updateSlidePercentage = () => {
       if (window.innerWidth < 640) {
-        setCenterSlidePercentage(50);
+        setCenterSlidePercentage(isDashboard ? 32 : 55);
       } else if (window.innerWidth < 768) {
         setCenterSlidePercentage(60);
       } else if (window.innerWidth < 950) {
@@ -57,7 +63,7 @@ const CarouselContainer = () => {
   }, []);
 
   return (
-    <div className="w-full sm:w-3/5 rounded-lg relative">
+    <div className={`w-full rounded-lg relative ${isDashboard ? "!sm:w-full" : "sm:w-3/5"}`}>
       <Carousel
         className="relative"
         showArrows={true}
@@ -73,21 +79,69 @@ const CarouselContainer = () => {
           hasNext && (
             <span
               onClick={onClickHandler}
-              className="absolute bottom-0 right-0 z-50 bg-zinc-800 text-zinc-100 p-4 rounded-full shadow-md cursor-pointer"
+              className="absolute bottom-0 right-0 z-50 bg-zinc-800 text-zinc-100 p-1.5 rounded-full shadow-md cursor-pointer"
             >
-              <FaArrowRight />
+              <FaArrowRight className="text-1xs" />
             </span>
           )
         }
       >
-        <ServiceCard index={0} service={"Pixel Cut"} type="Corte" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={1} service={"Balayage"} type="Coloração" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={2} service={"Highlights"} type="Reflexos" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={3} service={"Keratin"} type="Tratamento" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={4} service={"Straightening"} type="Alisamento" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={5} service={"Perm"} type="Ondulação" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={6} service={"Cut & Style"} type="Corte & Estilo" imageURL={"/assets/models/model-01.svg"} />
-        <ServiceCard index={7} service={"Blow Dry"} type="Escova" imageURL={"/assets/models/model-01.svg"} />
+        <ServiceCard
+          index={0}
+          service={"Pixel Cut"}
+          type="Corte"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={1}
+          service={"Balayage"}
+          type="Coloração"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={2}
+          service={"Highlights"}
+          type="Reflexos"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={3}
+          service={"Keratin"}
+          type="Tratamento"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={4}
+          service={"Straightening"}
+          type="Alisamento"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={5}
+          service={"Perm"}
+          type="Ondulação"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={6}
+          service={"Cut & Style"}
+          type="Corte & Estilo"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
+        <ServiceCard
+          index={7}
+          service={"Blow Dry"}
+          type="Escova"
+          imageURL={"/assets/models/model-01.svg"}
+          isDashboard={isDashboard}
+        />
       </Carousel>
     </div>
   );
@@ -98,6 +152,12 @@ ServiceCard.propTypes = {
   service: PropTypes.string,
   type: PropTypes.string,
   imageURL: PropTypes.string,
+  isDashboard: PropTypes.bool,
+};
+
+CarouselContainer.propTypes = {
+  width: PropTypes.string,
+  isDashboard: PropTypes.bool,
 };
 
 export default CarouselContainer;

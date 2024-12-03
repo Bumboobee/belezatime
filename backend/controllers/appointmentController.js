@@ -147,17 +147,17 @@ exports.getServicesSpentByUser = catchAsync(async (req, res, next) => {
       const discountedPrice = service.price * (1 - (service.percentOfDiscount || 0) / 100);
 
       if (!serviceStats[service.service]) {
-        serviceStats[service.service] = { totalSpent: 0, count: 0 };
+        serviceStats[service.service] = { total: 0, count: 0 };
       }
 
-      serviceStats[service.service].totalSpent += discountedPrice;
+      serviceStats[service.service].total += discountedPrice;
       serviceStats[service.service].count += 1;
     });
   });
 
-  const services = Object.entries(serviceStats).map(([serviceName, { totalSpent, count }]) => {
+  const services = Object.entries(serviceStats).map(([service, { total, count }]) => {
     const percentage = round(
-      (totalSpent /
+      (total /
         appointments.reduce((acc, appt) => {
           return (
             acc +
@@ -172,8 +172,8 @@ exports.getServicesSpentByUser = catchAsync(async (req, res, next) => {
     );
 
     return {
-      serviceName,
-      totalSpent: round(totalSpent, 2),
+      service,
+      total: round(total, 2),
       count,
       percentage,
     };
@@ -211,22 +211,27 @@ const calculateEstimatedRevenue = (appointments) => {
   }, 0);
 };
 
-const getMostPopularServices = (appointments, topN = 4) => {
+const getMostPopularServices = (appointments) => {
   const serviceCount = appointments.reduce((acc, appt) => {
     appt.services.forEach((service) => {
-      acc[service.service] = (acc[service.service] || 0) + 1;
+      if (!acc[service.service]) {
+        acc[service.service] = { count: 0, total: 0 };
+      }
+      acc[service.service].count += 1;
+      const discountMultiplier = 1 - (service.percentOfDiscount || 0) / 100;
+      acc[service.service].total += service.price * discountMultiplier;
     });
     return acc;
   }, {});
 
-  const totalServices = Object.values(serviceCount).reduce((sum, count) => sum + count, 0);
+  const totalServices = Object.values(serviceCount).reduce((sum, { count }) => sum + count, 0);
 
   return Object.entries(serviceCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, topN)
-    .map(([service, count]) => ({
+    .sort((a, b) => b[1].count - a[1].count)
+    .map(([service, { count, total }]) => ({
       service,
       count,
+      total: round(total),
       percentage: round((count / totalServices) * 100),
     }));
 };

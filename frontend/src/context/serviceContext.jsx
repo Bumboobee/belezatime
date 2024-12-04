@@ -44,15 +44,7 @@ export const ServiceProvider = ({ children }) => {
   const [cookies] = useCookies(["__btime_account_jwt", "__btime_account_user"]);
 
   const fetchServices = async () => {
-    if (!cookies.__btime_account_jwt) {
-      return [];
-    }
-
-    const response = await axios.get(`${baseUrl}/services`, {
-      headers: {
-        Authorization: `Bearer ${cookies.__btime_account_jwt}`,
-      },
-    });
+    const response = await axios.get(`${baseUrl}/services`);
 
     return response.data.data.services;
   };
@@ -80,9 +72,9 @@ export const ServiceProvider = ({ children }) => {
     setServiceForm(service);
 
     if (service.percentOfDiscount) {
-      setIsPromotionEnabled(true)
+      setIsPromotionEnabled(true);
     } else {
-      setIsPromotionEnabled(false)
+      setIsPromotionEnabled(false);
     }
   }, []);
 

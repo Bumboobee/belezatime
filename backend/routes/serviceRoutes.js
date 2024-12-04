@@ -4,10 +4,9 @@ const serviceController = require("../controllers/serviceController");
 
 const router = express.Router();
 
-router.use(authController.protect);
-
 router.route("/").get(serviceController.getAllServices);
 
+router.use(authController.protect);
 router.use(authController.restrictTo("admin"));
 
 router.route("/").post(serviceController.createService);

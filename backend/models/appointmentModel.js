@@ -30,6 +30,7 @@ const appointmentSchema = new mongoose.Schema({
   notes: {
     type: String,
     trim: true,
+    maxLength: [200, "As observações devem ter no máximo 200 caracteres"],
   },
   isConfirmed: {
     type: Boolean,

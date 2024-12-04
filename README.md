@@ -4,6 +4,8 @@ Bem-vindo ao repositório do projeto **BelezaTime**! Este sistema foi desenvolvi
 
 ---
 
+![Thumbnail](https://github.com/user-attachments/assets/0dfe3c15-3d12-4ec3-bf33-d75fac100dbe)
+
 ### 📖 **Sobre o Projeto**  
 O **BelezaTime** é uma aplicação web moderna e responsiva que permite:  
 - **Clientes** agendarem serviços com facilidade;  

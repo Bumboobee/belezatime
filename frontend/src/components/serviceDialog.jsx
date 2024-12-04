@@ -271,7 +271,7 @@ const ServiceDialog = () => {
           </div>
         </div>
 
-        <DialogFooter className="flex !flex-col gap-4 items-end">
+        <DialogFooter className="flex !flex-col gap-4 items-end !max-h-[400px]">
           <Button
             className={buttonVariants({
               className: "bg-red-700 hover:bg-red-800 text-white gap-1.5 px-6 w-fit",
@@ -298,7 +298,7 @@ const ServiceDialog = () => {
             </div>
           ) : (
             <>
-              <Table className="relative overflow-x-auto w-full">
+              <Table className="relative overflow-x-auto w-full ">
                 <TableHeader>
                   <TableRow>
                     <TableHead className="text-xs text-zinc-700 font-semibold !w-[200px] sm:!w-auto">Serviço</TableHead>

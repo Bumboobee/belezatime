@@ -37,6 +37,7 @@ const NextAppointments = ({ isAdmin }) => {
 
         {isAdmin && nextAppointments.length > 0 ? <ExportDataDialog data={nextAppointments} /> : null}
       </div>
+      {console.log(nextAppointments)}
 
       {isFetchingAppointments ? (
         <Loader />

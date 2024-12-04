@@ -9,7 +9,7 @@ const Footer = () => {
   const { handleScheduleAppointmentRedirect } = useContext(AuthContext);
 
   return (
-    <footer className="bg-zinc-800 text-white py-10 px-6 sm:px-12 font-montserrat">
+    <footer id="agendamento" className="bg-zinc-800 text-white py-10 px-6 sm:px-12 font-montserrat">
       <div className="flex flex-col sm:flex-row justify-between items-start gap-10">
         <div className="w-full sm:w-1/3 flex justify-center">
           <iframe
@@ -83,9 +83,14 @@ const Footer = () => {
           </Link>
         </div>
         <p className="mt-4 sm:mt-0 text-center sm:text-right">
-          Copyright &copy; BelezaTime - Todos os Direitos Reservados | {" "}
-          
-          <Link to={"https://bumboobee.netlify.app/"} target="_blank" className="font-semibold underline text-brown-chocolate-400">Bumboobee</Link>
+          Copyright &copy; BelezaTime - Todos os Direitos Reservados |{" "}
+          <Link
+            to={"https://bumboobee.netlify.app/"}
+            target="_blank"
+            className="font-semibold underline text-brown-chocolate-400"
+          >
+            Bumboobee
+          </Link>
         </p>
       </div>
     </footer>

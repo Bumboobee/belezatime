@@ -132,30 +132,32 @@ const GeneralInformation = ({ isAdmin }) => {
             <CarouselContainer isDashboard={true} />
           </div>
 
-          <div className="w-full bg-orange-500 -bottom-0 -left-0 absolute py-1 px-3 rounded-b flex justify-between font-montserrat items-end text-zinc-800">
+          <div className="w-full bg-orange-500 -bottom-0 -left-0 absolute py-1 px-3 rounded-b flex justify-between font-montserrat items-center text-zinc-800">
             {currentService ? (
               <>
                 <div className="flex flex-col">
-                  <span className="text-3xs font-medium">Somente Hoje</span>
-                  <span className="text-xl font-bold font-poppins leading-none">
+                  <span className="text-4xs sm:text-3xs font-medium">Somente Hoje</span>
+                  <span className="text-lg sm:text-xl font-bold font-poppins leading-none">
                     {currentService.percentOfDiscount}% OFF
                   </span>
                 </div>
 
-                <span className=" text-zinc-900 flex justify-between gap-4 items-center leading-none">
-                  <span className="text-xl font-bold truncate max-w-[120px] sm:max-w-full"> {currentService.service}</span>
+                <span className="text-zinc-900 flex justify-between gap-4 items-center leading-none">
+                  <p className="text-sm sm:text-lg font-bold text-center max-w-[120px] sm:max-w-[190px]">
+                    {currentService.service}
+                  </p>
                   <span className="flex flex-col">
-                    <span className="text-xs italic text-zinc-800/80 line-through">
+                    <span className="text-4xs sm:text-xs italic text-zinc-800/80 line-through">
                       {formatToBRL(currentService.price)}
                     </span>
-                    <span className="font-bold">
+                    <span className="text-xs sm:text-base font-bold">
                       {formatToBRL(
                         currentService.price - currentService.price * (currentService.percentOfDiscount / 100)
                       )}
                     </span>
                   </span>
                 </span>
-                <span className="text-3xs font-medium w-[50px] text-right italic">Promoção Imperdível</span>
+                <span className="text-4xs sm:text-3xs font-medium w-[50px] text-right italic">Promoção Imperdível</span>
               </>
             ) : (
               <span className="text-md font-semibold italic">Sem Promoções para hoje.</span>

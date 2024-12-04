@@ -6,7 +6,7 @@ import { FaCheck } from "react-icons/fa";
 import { useCookies } from "react-cookie";
 import { IoMdAlert } from "react-icons/io";
 import { useToast } from "../hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast"
+import { ToastAction } from "@/components/ui/toast";
 import { useQuery, useQueryClient } from "react-query";
 import { ServiceContext } from "@/context/serviceContext";
 import { formatToDateOnly, getCurrentDate } from "@/utils/formatDate";
@@ -109,7 +109,7 @@ export const AppointmentProvider = ({ children }) => {
     isFetching: isFetchingAppointments,
     error: errorAppointments,
   } = useQuery("appointments", fetchAppointments, {
-    refetchOnWindowFocus: false,
+    refetchOnWindowFocus: true,
     enabled: !!cookies.__btime_account_user && location === "/dashboard",
     refetchInterval:
       !!cookies.__btime_account_user && cookies.__btime_account_user.role === "admin" ? 1000 * 60 * 5 : false,
@@ -156,40 +156,44 @@ export const AppointmentProvider = ({ children }) => {
 
   //filter the appointments to get the next and past appointments
   useEffect(() => {
-    const nextAppointments = appointmentsData?.filter(
-      (appointment) => new Date(appointment.date) >= new Date(getCurrentDate())
-    );
+    if (appointmentsData.length > 0) {
+      const nextAppointments = appointmentsData?.filter(
+        (appointment) => new Date(appointment.date) >= new Date(getCurrentDate())
+      );
 
-    const pastAppointments = appointmentsData?.filter(
-      (appointment) => new Date(appointment.date) < new Date(getCurrentDate())
-    );
+      const pastAppointments = appointmentsData?.filter(
+        (appointment) => new Date(appointment.date) < new Date(getCurrentDate())
+      );
 
-    if (nextAppointments) {
-      nextAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+      if (nextAppointments) {
+        nextAppointments.sort((a, b) => new Date(a.date) - new Date(b.date));
+      }
+
+      if (pastAppointments) {
+        pastAppointments.sort((a, b) => new Date(b.date) - new Date(a.date));
+      }
+
+      setNextAppointments(nextAppointments);
+      setPastAppointments(pastAppointments);
+
+      return () => {
+        setNextAppointments([]);
+        setPastAppointments([]);
+      };
     }
-
-    if (pastAppointments) {
-      pastAppointments.sort((a, b) => new Date(b.date) - new Date(a.date));
-    }
-
-    setNextAppointments(nextAppointments);
-    setPastAppointments(pastAppointments);
-
-    return () => {
-      setNextAppointments([]);
-      setPastAppointments([]);
-    };
   }, [appointmentsData]);
 
   useEffect(() => {
     if (appointmentForm.service !== "") {
-      const serviceToAdd = servicesData.find((service) => service._id === appointmentForm.service);
+      if (servicesUserPick.length === 0) {
+        const serviceToAdd = servicesData.find((service) => service._id === appointmentForm.service);
 
-      if (serviceToAdd) {
-        setServicesUserPick((prev) => {
-          const isAlreadyAdded = prev.some((service) => service._id === appointmentForm.service);
-          return isAlreadyAdded ? prev : [...prev, serviceToAdd];
-        });
+        if (serviceToAdd) {
+          setServicesUserPick((prev) => {
+            const isAlreadyAdded = prev.some((service) => service._id === appointmentForm.service);
+            return isAlreadyAdded ? prev : [...prev, serviceToAdd];
+          });
+        }
       }
     }
   }, [appointmentForm.service]);
@@ -305,7 +309,7 @@ export const AppointmentProvider = ({ children }) => {
         queryClient.invalidateQueries("weekly-appointments");
         queryClient.invalidateQueries("yearly-appointments");
         queryClient.invalidateQueries("past-three-months-appointments");
-        
+
         toast({
           variant: "destructive",
           title: "Agora confirme o horário.",
@@ -314,7 +318,14 @@ export const AppointmentProvider = ({ children }) => {
               Confirme o horário na aba de <span className="font-semibold italic">{`"Próximos Agendamentos"`}</span> !
             </p>
           ),
-          action: <ToastAction altText="Confirmar?" onClick={() => handleCornfimOrCancelAppointment(response.data.data.data._id, true)}>Confirmar?</ToastAction>,
+          action: (
+            <ToastAction
+              altText="Confirmar?"
+              onClick={() => handleCornfimOrCancelAppointment(response.data.data.data._id, true)}
+            >
+              Confirmar?
+            </ToastAction>
+          ),
         });
       }
     } catch (error) {

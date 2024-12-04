@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dialog";
 
 import ErrorForm from "./errorForm";
+import ServiceImage from "./serviceImage";
 
 const AppointmentDialog = () => {
   const {
@@ -190,7 +191,7 @@ const AppointmentDialog = () => {
                 onChange={handleInputChange}
               />
 
-              <ErrorForm error={appointmentFormErrors.price} />
+              <ErrorForm error={appointmentFormErrors.date} />
             </div>
 
             <div className="flex flex-col col-span-3 sm:w-fit">
@@ -240,7 +241,7 @@ const AppointmentDialog = () => {
           ) : null}
         </div>
 
-        <DialogFooter className="flex !flex-col gap-4 items-end">
+        <DialogFooter className="flex !flex-col gap-4 items-end overflow-hidden">
           <div className="flex w-full flex-col items-end gap-2">
             {isDateWithinLimit ? (
               <TooltipProvider>
@@ -295,9 +296,21 @@ const AppointmentDialog = () => {
                   <TableBody>
                     {servicesUserPick.map((service) => (
                       <TableRow key={service._id} className="text-2xs sm:text-1xs">
-                        <TableCell className="font-medium truncate max-w-[150px] whitespace-nowrap">
-                          {service.service}
-                        </TableCell>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <TableCell className="font-medium truncate max-w-[150px] whitespace-nowrap">
+                                {service.service}
+                              </TableCell>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="max-w-[250px] text-center">
+                                {service.description ? service.description : "Descrição não disponível."}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+
                         <TableCell className="text-center">{formatToBRL(service.price)}</TableCell>
                         <TableCell className="text-center">
                           {service.percentOfDiscount
@@ -358,9 +371,20 @@ const AppointmentDialog = () => {
                       .filter((service) => service._id === appointmentForm.service)
                       .map((service) => (
                         <TableRow key={service._id} className="text-2xs sm:text-1xs">
-                          <TableCell className="font-medium truncate max-w-[150px] whitespace-nowrap">
-                            {service.service}
-                          </TableCell>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <TableCell className="font-medium truncate max-w-[150px] whitespace-nowrap">
+                                  {service.service}
+                                </TableCell>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="max-w-[250px] text-center">
+                                  {service.description ? service.description : "Descrição não disponível."}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           <TableCell className="text-center">{formatToBRL(service.price)}</TableCell>
                           <TableCell className="text-center">
                             {service.percentOfDiscount
@@ -394,7 +418,7 @@ const AppointmentDialog = () => {
               ) : null}
 
               <div
-                className={`flex w-full items-end ${
+                className={`flex w-full items-end mt-4 ${
                   appointmentForm.service === "" ? "justify-end" : "justify-between"
                 }`}
               >
@@ -402,14 +426,8 @@ const AppointmentDialog = () => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger>
-                        {" "}
-                        <img
-                          src={"/assets/models/model-01.svg"}
-                          // servicesData.filter((service) => service._id === appointmentForm.service)[0].imageURL
-                          loading="lazy"
-                          alt="Serviço Img Ilustrativa"
-                          width={150}
-                          className="select-none"
+                        <ServiceImage
+                          imageURL={servicesData.find((service) => service._id === appointmentForm.service)?.imageURL}
                         />
                       </TooltipTrigger>
                       <TooltipContent>

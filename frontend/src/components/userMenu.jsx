@@ -23,7 +23,7 @@ const UserMenu = ({ user }) => {
         <ChevronDown className="cursor-pointer w-4 h-4 tour-step-2" />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-56" align="start">
+      <DropdownMenuContent className="w-56 font-montserrat" align="start">
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-0.5 leading-none">
             <p className="font-medium text-sm ">{getFirstAndLastWord(user.name, 4)}</p>

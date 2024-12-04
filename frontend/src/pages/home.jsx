@@ -1,33 +1,13 @@
-import PropTypes from "prop-types";
 import Footer from "../components/footer";
 import PageTitle from "@/components/pageTitle";
 import HomeNavbar from "../components/homeNavbar";
 import CarouselContainer from "../components/carousel";
+import PromotionWrapper from "@/components/promotionWrapper";
 
 import { useContext } from "react";
 import { AuthContext } from "@/context/authContext";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import { Button, buttonVariants } from "@/components/ui/button";
-
-const PromotionCard = ({ index, service, imageURL, percentOfDiscount }) => {
-  const bgClass = index % 2 === 0 ? "bg-off-white-800" : "bg-brown-chocolate-100";
-
-  return (
-    <div className={`${bgClass} pr-4 rounded-lg flex gap-4 sm:gap-4 relative`}>
-      <div className="h-full w-[100px] sm:w-[120px] rounded-l-lg relative overflow-hidden">
-        <img src={imageURL} alt={service} className="sm:absolute sm:-left-2 sm:-bottom-6 select-none" />
-      </div>
-
-      <div className="flex flex-col gap-2 sm:gap-4 text-zinc-800 pb-4 pt-4">
-        <header className="flex flex-col">
-          <span className="text-xs">Somente Hoje</span>
-          <span className="text-lg sm:text-xl font-semibold">{percentOfDiscount}% OFF</span>
-        </header>
-        <span className="text-sm sm:text-lg max-w-[155px]">{service}</span>
-      </div>
-    </div>
-  );
-};
 
 const Home = () => {
   const { handleScheduleAppointmentRedirect } = useContext(AuthContext);
@@ -67,26 +47,16 @@ const Home = () => {
                   lugar para cortes de cabelo; é um refúgio onde o seu estilo único é o protagonista.
                 </p>
 
-                <div className="flex flex-col sm:flex-row gap-4 sm:pb-6">
-                  <PromotionCard
-                    index={1}
-                    service="Escova"
-                    imageURL="/assets/models/model-02.svg"
-                    percentOfDiscount={50}
-                  />
-                  <PromotionCard
-                    index={2}
-                    service="Chapinha com Alisamento"
-                    imageURL="/assets/models/model-03.png"
-                    percentOfDiscount={15}
-                  />
-                </div>
+                <PromotionWrapper />
               </div>
             </div>
           </div>
         </section>
 
-        <section className="w-full px-4 sm:px-10 py-10 sm:py-24 flex flex-col sm:flex-row bg-off-white-600 items-center sm:items-start justify-center sm:justify-between gap-8 sm:gap-0">
+        <section
+          id="serviços"
+          className="w-full px-4 sm:px-10 py-10 sm:py-24 flex flex-col sm:flex-row bg-off-white-600 items-center sm:items-start justify-center sm:justify-between gap-8 sm:gap-0"
+        >
           <div className="w-full sm:w-2/5 flex flex-col items-center sm:items-start justify-center text-center sm:text-left font-poppins">
             <h2 className="text-2xl sm:text-4xl text-zinc-800">Nossos Serviços</h2>
             <p className="text-sm sm:text-base text-zinc-500 mt-4 font-light">
@@ -102,13 +72,6 @@ const Home = () => {
       </main>
     </>
   );
-};
-
-PromotionCard.propTypes = {
-  index: PropTypes.number,
-  service: PropTypes.string,
-  imageURL: PropTypes.string,
-  percentOfDiscount: PropTypes.number,
 };
 
 export default Home;

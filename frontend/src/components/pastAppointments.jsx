@@ -46,22 +46,24 @@ const PastAppointments = ({ isAdmin }) => {
         />
       ) : (
         <>
-          <div className="mb-4 flex items-end justify-between">
-            <ExportDataDialog data={pastAppointments} />
+          {isAdmin ? (
+            <div className="mb-4 flex items-end justify-between">
+              <ExportDataDialog data={pastAppointments} />
 
-            <div className="flex flex-col items-end">
-              <Label htmlFor="date-filter" className="block text-1xs font-medium text-zinc-700">
-                Filtrar por Data:
-              </Label>
-              <Input
-                id="date-filter"
-                type="date"
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-                className="border border-off-white-800 rounded px-3 py-2 w-fit text-sm"
-              />
+              <div className="flex flex-col items-end">
+                <Label htmlFor="date-filter" className="block text-1xs font-medium text-zinc-700">
+                  Filtrar por Data:
+                </Label>
+                <Input
+                  id="date-filter"
+                  type="date"
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  className="border border-off-white-800 rounded px-3 py-2 w-fit text-sm"
+                />
+              </div>
             </div>
-          </div>
+          ) : null}
 
           <Table className="relative overflow-x-auto w-full">
             <TableHeader>

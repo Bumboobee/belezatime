@@ -10,6 +10,10 @@ body {
   font-family: Poppins, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 .bg-radial-gradient {
   background: radial-gradient(100% 100% at 50% 0%, #7d573c 0%, #dd9a6e 50%, #a06b46 100%);
 }

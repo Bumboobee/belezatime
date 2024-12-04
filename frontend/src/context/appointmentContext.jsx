@@ -347,7 +347,7 @@ export const AppointmentProvider = ({ children }) => {
     } finally {
       setIsSavingAppointment(false);
     }
-  }, [appointmentForm, appointmentFormErrors, cookies.__btime_account_jwt, toast]);
+  }, [appointmentForm, appointmentFormErrors, cookies.__btime_account_jwt, servicesUserPick, toast]);
 
   const handleCornfimOrCancelAppointment = useCallback(
     async (appointmentId, isConfirmed) => {

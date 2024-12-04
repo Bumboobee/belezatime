@@ -22,7 +22,12 @@ const Home = () => {
         <section className="sm:h-dvh h-full bg-radial-gradient font-montserrat">
           <div className="w-full h-full px-6 sm:px-10 pt-16 sm:pt-24 flex flex-col-reverse sm:flex-row-reverse">
             <div className="w-full sm:w-1/2 h-1/2 sm:h-full flex justify-center items-end">
-              <img src="/assets/models/model-01.svg" alt="Model" className="max-h-full object-contain select-none" />
+              <img
+                src="/assets/models/model-01.svg"
+                alt="Model"
+                loading="lazy"
+                className="max-h-full object-contain select-none"
+              />
             </div>
 
             <div className="w-full sm:w-1/2 flex flex-col justify-between gap-10 sm:gap-0 mt-12 sm:mt-0">

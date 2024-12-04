@@ -21,7 +21,7 @@ const DashboardNavbar = ({ user }) => {
             <span className="text-zinc-500 text-2xs sm:text-1xs">{user.email}</span>
 
             {user.role === "admin" ? (
-              <span className="text-5xs sm:text-4xs font-medium me-2 mt-1 w-fit px-2.5 py-0.5 rounded-full bg-orange-600 text-off-white-100">
+              <span className="text-4xs sm:text-2xs font-medium me-2 mt-1 w-fit px-2.5 py-0.5 rounded-full bg-orange-600 text-off-white-100">
                 Admin
               </span>
             ) : null}

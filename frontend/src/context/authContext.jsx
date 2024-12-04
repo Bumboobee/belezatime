@@ -105,16 +105,6 @@ export const AuthProvider = ({ children }) => {
       setIsDoingAuthProcess(false);
     } finally {
       setIsDoingAuthProcess(false);
-
-      toast({
-        title: (
-          <span className="flex items-center">
-            <IoMdAlert className="mr-2 w-5 h-5 text-red-400" />
-            Algo deu errado!
-          </span>
-        ),
-        description: "Erro ao criar conta. Tente novamente mais tarde.",
-      });
     }
   }, [authForm, authFormErrors]);
 

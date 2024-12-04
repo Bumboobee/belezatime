@@ -62,9 +62,9 @@ const CarouselContainer = ({ isDashboard }) => {
   useEffect(() => {
     const updateSlidePercentage = () => {
       if (window.innerWidth < 640) {
-        setCenterSlidePercentage(isDashboard ? 32 : 55);
+        setCenterSlidePercentage(isDashboard ? 32 : 62);
       } else if (window.innerWidth < 768) {
-        setCenterSlidePercentage(60);
+        setCenterSlidePercentage(64);
       } else if (window.innerWidth < 950) {
         setCenterSlidePercentage(50);
       } else if (window.innerWidth < 1025) {

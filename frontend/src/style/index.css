@@ -51,7 +51,7 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #a16445;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -88,6 +88,11 @@ input:-webkit-autofill:active {
   align-items: center !important;
   justify-content: start !important;
   padding: 0 !important;
+
+}
+
+.recharts-wrapper svg {
+  overflow: inherit !important;
 }
 
 @layer utilities {

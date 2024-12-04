@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import PropTypes from "prop-types";
+import LineChartAnualDialog from "./lineChartAnualDialog";
 
 const UserMenu = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,10 +32,7 @@ const UserMenu = ({ user }) => {
           </div>
         </div>
 
-        {/* <DropdownMenuItem className="flex items-center justify-between " onClick={handleLogout}>
-          Alterar Senha
-          <FaLock />
-        </DropdownMenuItem> */}
+        {user.role === "admin" ? <LineChartAnualDialog /> : null}
 
         <DropdownMenuSeparator />
 

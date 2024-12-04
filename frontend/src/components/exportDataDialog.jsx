@@ -9,9 +9,8 @@ import { Button, buttonVariants } from "./ui/button";
 import { formatDateBrazil } from "@/utils/formatDate";
 import { FaFilePdf, FaFileCsv } from "react-icons/fa6";
 import { formatToBRL } from "@/utils/currencyOperations";
-import { DialogDescription } from "@radix-ui/react-dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 
 import jsPDF from "jspdf";
 import * as XLSX from "xlsx";
@@ -192,7 +191,7 @@ const ExportDataDialog = ({ data }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>

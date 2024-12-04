@@ -2,6 +2,7 @@ import Footer from "../components/footer";
 import PageTitle from "@/components/pageTitle";
 import HomeNavbar from "../components/homeNavbar";
 import CarouselContainer from "../components/carousel";
+import ScheduleOfWork from "@/components/scheduleOfWork";
 import PromotionWrapper from "@/components/promotionWrapper";
 
 import { useContext } from "react";
@@ -24,7 +25,7 @@ const Home = () => {
             <div className="w-full sm:w-1/2 h-1/2 sm:h-full flex justify-center items-end">
               <img
                 src="/assets/models/model-01.svg"
-                alt="Model"
+                alt="Main model"
                 loading="lazy"
                 className="max-h-full object-contain select-none"
               />
@@ -71,6 +72,30 @@ const Home = () => {
           </div>
 
           <CarouselContainer />
+        </section>
+
+        <section
+          id="agendamentos"
+          className="w-full px-4 sm:px-10 py-5 sm:py-14 flex flex-col sm:flex-row bg-off-white-600 items-center sm:items-stretch justify-center sm:justify-between gap-16 sm:gap-12"
+        >
+          <div className="w-full sm:w-4/5 flex flex-col items-center sm:items-start sm:gap-12 gap-6 justify-center text-center sm:text-left font-poppins">
+            <header>
+              <h2 className="text-2xl sm:text-4xl text-zinc-800">Agendamentos</h2>
+              <p className="text-xs sm:text-sm text-zinc-500 mt-4 font-light">
+                Organize seu tempo com facilidade! Escolha o serviço que deseja e agende sua visita com apenas alguns
+                cliques. Simples, rápido e no horário que funciona para você.
+              </p>
+            </header>
+
+            <img
+              src="/assets/models/model-02.svg"
+              alt="Secondary model"
+              loading="lazy"
+              className="rounded-2xl w-full"
+            />
+          </div>
+
+          <ScheduleOfWork />
         </section>
 
         <Footer />

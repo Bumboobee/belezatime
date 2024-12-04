@@ -40,22 +40,26 @@ const GeneralInformation = ({ isAdmin }) => {
       </h2>
 
       {isAdmin ? (
-        <main className="py-2 px-3">
+        <main className="py-2 px-3 h-full">
           {isFetchingWeeklyAppointments ? (
-            <Loader />
+            <div className="h-full w-full">
+              <Loader />
+            </div>
           ) : errorWeeklyAppointments ? (
-            <MessageWarning
-              icon={<LuInfo />}
-              color={errorWeeklyAppointments ? "yellow" : "zinc"}
-              type={errorWeeklyAppointments ? "error" : "warning"}
-              message={
-                errorWeeklyAppointments
-                  ? import.meta.env.VITE_ENV === "development"
-                    ? errorWeeklyAppointments?.response?.data?.message || "Falha ao carregar Dados Semanais."
-                    : "Falha ao carregar Dados Semanais."
-                  : "Sem Agendamentos para esta semana."
-              }
-            />
+            <div className="h-full w-full">
+              <MessageWarning
+                icon={<LuInfo />}
+                color={errorWeeklyAppointments ? "yellow" : "zinc"}
+                type={errorWeeklyAppointments ? "error" : "warning"}
+                message={
+                  errorWeeklyAppointments
+                    ? import.meta.env.VITE_ENV === "development"
+                      ? errorWeeklyAppointments?.response?.data?.message || "Falha ao carregar Dados Semanais."
+                      : "Falha ao carregar Dados Semanais."
+                    : "Sem Agendamentos para esta semana."
+                }
+              />
+            </div>
           ) : (
             <section className="font-montserrat text-zinc-700 h-full flex flex-col justify-between overflow-hidden">
               <div className="flex flex-col lg:flex-row justify-between mb-3 gap-4">

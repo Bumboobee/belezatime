@@ -8,7 +8,7 @@ import AppointmentDialog from "@/components/appointmentDialog";
 const DashboardNavbar = ({ user }) => {
   return (
     <nav className="w-full h-[90px] relative px-4 py-2">
-      <div className="w-full h-full flex justify-between sm:flex-row flex-col gap-2 sm:gap-0  sm:items-center font-montserrat border-b border-off-white-800">
+      <div className="w-full h-full flex justify-between sm:flex-row flex-row gap-2 sm:gap-0 sm:items-center  items-center font-montserrat border-b border-off-white-800">
         <div className="flex gap-3 items-center">
           <img
             src="/assets/content/user.svg"

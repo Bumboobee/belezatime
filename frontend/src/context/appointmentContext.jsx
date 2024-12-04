@@ -351,7 +351,6 @@ export const AppointmentProvider = ({ children }) => {
 
   const handleCornfimOrCancelAppointment = useCallback(
     async (appointmentId, isConfirmed) => {
-      console.log("appointmentId", appointmentId);
       try {
         const response = await axios.patch(
           `${baseUrl}/appointments/${appointmentId}`,

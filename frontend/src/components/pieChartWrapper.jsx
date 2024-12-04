@@ -36,12 +36,12 @@ const PieChartWrapper = ({ isAdmin }) => {
       <h2 className="text-orange-600 font-montserrat font-semibold mb-1.5">
         {isAdmin ? "Divisão de Serviços Semanais" : "Agendamentos Últimos 3 meses"}
       </h2>
-      <section className="h-full ">
+      <section className="sm:h-full h-fit">
         {isAdmin ? (
           <>
             {isFetchingWeeklyAppointments ? (
               <Loader />
-            ) : errorWeeklyAppointments || weeklyAppointmentsData.length === 0 ? (
+            ) : errorWeeklyAppointments || weeklyAppointmentsData?.mostPopularServices?.length === 0 ? (
               <MessageWarning
                 color={errorWeeklyAppointments ? "yellow" : "zinc"}
                 type={errorWeeklyAppointments ? "error" : "warning"}
@@ -51,6 +51,8 @@ const PieChartWrapper = ({ isAdmin }) => {
                       ? errorWeeklyAppointments?.response?.data?.message ||
                         "Não foi possível carregar o gráfico dos últimos 3 meses."
                       : "Não foi possível carregar o gráfico dos últimos 3 meses."
+                    : isAdmin
+                    ? "Sem agendamentos confirmados para esta semana."
                     : "Agende um hórario e confirme para visualizar."
                 }
               />

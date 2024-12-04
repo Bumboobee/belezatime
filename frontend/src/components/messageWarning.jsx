@@ -41,13 +41,13 @@ export const MessageWarning = ({ icon, color, message, type }) => {
 
   return (
     <section className="w-full h-full flex justify-center items-center">
-      <div className={`flex flex-col rounded-md gap-1 py-2.5 px-1.5 font-plus-jakarta ${colorOpacity}`}>
-        <span className={`flex items-center gap-1 text-xs font-medium px-1 py-1 rounded ${colorClasses}`}>
+      <div className={`flex flex-col rounded-md gap-1 sm:py-2.5 sm:px-1.5 p-1 font-montserrat ${colorOpacity}`}>
+        <span className={`flex items-center gap-1 text-2xs sm:text-xs font-medium sm:p-1 p-0 rounded ${colorClasses}`}>
           <span className={`flex items-center justify-center rounded px-1.5 w-7 h-7 ${colorClasses} ${colorOpacity}`}>
             {icon}
           </span>
 
-          <p className="font-semibold text-1xs pr-2" lang="pt-BR">
+          <p className="font-semibold text-2xs sm:text-1xs pr-2" lang="pt-BR">
             {message}
           </p>
         </span>

@@ -35,7 +35,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <PageTitle title={`${import.meta.env.VITE_APP_NAME} • Suas Informações`} />
+      <PageTitle title={`${import.meta.env.VITE_APP_NAME} • Seus Agendamentos`} />
 
       <main className="bg-off-white-600 h-dvh w-dvh">
         <DashboardNavbar user={user} />

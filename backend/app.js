@@ -1,4 +1,5 @@
 const hpp = require("hpp");
+const path = require("path");
 const cors = require("cors");
 const morgan = require("morgan");
 const express = require("express");
@@ -7,6 +8,7 @@ const cookiePaser = require("cookie-parser");
 
 const helmet = require("helmet");
 const xss = require("xss-clean");
+const favicon = require("serve-favicon");
 const rateLimit = require("express-rate-limit");
 const mongoSanitize = require("express-mongo-sanitize");
 
@@ -43,6 +45,8 @@ app.use(express.urlencoded({ extended: true, limit: "9000kb" }));
 app.use(cookiePaser());
 app.use(mongoSanitize());
 app.use(xss());
+
+app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 
 app.use(
   hpp({
